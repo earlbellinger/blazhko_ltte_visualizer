@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
   cacheElements();
-  const payload = await fetch("./data/theoretical_lightcurve.json").then((response) => response.json());
+  const payload = await loadLightcurvePayload();
   state.lightcurve = prepareLightcurve(payload);
   state.defaultControls = defaultsFromPayload(payload);
   state.controls = cloneControls(state.defaultControls);
@@ -95,6 +95,14 @@ async function init() {
   resizeAndDraw();
   window.addEventListener("resize", resizeAndDraw);
   requestAnimationFrame(animationLoop);
+}
+
+async function loadLightcurvePayload() {
+  if (window.RRLYRAE_LIGHTCURVE_DATA) return window.RRLYRAE_LIGHTCURVE_DATA;
+
+  const response = await fetch("./data/theoretical_lightcurve.json");
+  if (!response.ok) throw new Error(`Could not load light curve data: ${response.status}`);
+  return response.json();
 }
 
 function cacheElements() {

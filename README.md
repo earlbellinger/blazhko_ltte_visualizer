@@ -8,6 +8,8 @@ The browser reads `data/theoretical_lightcurve.json`, generated from the OGLE-ba
 python .\scripts\build_lightcurve.py
 ```
 
+You can also open `index.html` directly in Chrome. The app includes `data/theoretical_lightcurve.js` as a local-file data wrapper because Chrome blocks `fetch()` requests to JSON files from `file://` pages.
+
 Run locally from this directory with:
 
 ```bash

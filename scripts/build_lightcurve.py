@@ -16,6 +16,7 @@ BLAZHKO_AMPLITUDE_PATH = OGLE_RESULTS_DIR / "posterior_amplitude_phase_summary.c
 BLAZHKO_BETA_DRAWS_PATH = OGLE_RESULTS_DIR / "posterior_beta_draws.npy"
 LTTE_SUMMARY_PATH = DATA_DIR / "ltte_fit_summary.json"
 OUTPUT_PATH = DATA_DIR / "theoretical_lightcurve.json"
+JS_OUTPUT_PATH = DATA_DIR / "theoretical_lightcurve.js"
 
 
 def load_amplitude_rows(path: Path) -> dict[str, dict[str, float | str]]:
@@ -257,8 +258,19 @@ def main() -> None:
             "ltte": ltte_defaults(ltte_summary),
         },
     }
-    OUTPUT_PATH.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-    print(json.dumps({"output": str(OUTPUT_PATH), "period_days": lightcurve["period_days"]}, indent=2))
+    json_payload = json.dumps(payload, indent=2)
+    OUTPUT_PATH.write_text(json_payload, encoding="utf-8")
+    JS_OUTPUT_PATH.write_text(f"window.RRLYRAE_LIGHTCURVE_DATA = {json_payload};\n", encoding="utf-8")
+    print(
+        json.dumps(
+            {
+                "output": str(OUTPUT_PATH),
+                "js_output": str(JS_OUTPUT_PATH),
+                "period_days": lightcurve["period_days"],
+            },
+            indent=2,
+        )
+    )
 
 
 if __name__ == "__main__":
